@@ -1,6 +1,7 @@
 const app=require('express')();
 const products=require('./products')
-console.log(products);
+const accessOrigin=require('./middleware/accessControl')
+app.use(accessOrigin);
 
  app.get('/api/v1/products',(req,res)=>{
     let newProducts=products;
@@ -9,11 +10,9 @@ console.log(products);
         newProducts=newProducts.filter(prod=>prod.name.toLowerCase().indexOf(search.toLowerCase())!==-1)
     }
     if(newProducts.length===0){
-       return res.status(200).json({success:true,data:[]})
+       return res.json({success:true,data:[]})
     }
-  return res
-    .status(200)
-    .json({ success: true, data: newProducts, nbHits: newProducts.length });
+  return res.json({ success: true, data: newProducts, nbHits: newProducts.length });
 })
 
 app.listen(5000,()=>{
